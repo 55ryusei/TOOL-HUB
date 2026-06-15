@@ -1,0 +1,135 @@
+@import 'tailwindcss';
+
+/* ===== ROG × Glass design tokens (Tailwind v4 @theme) ===== */
+@theme {
+  --color-ink: #0a0a0d;
+  --color-ink-2: #111118;
+  --color-rog-red: #ff003c;
+  --color-rog-magenta: #ff2d78;
+  --color-rog-cyan: #19e3ff;
+
+  --font-display: 'Orbitron', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* ===== Base ===== */
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: #e7e7ee;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-rog-red);
+  color: #fff;
+}
+
+/* Thin neon scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #08080b;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-rog-red), var(--color-rog-magenta));
+  border-radius: 99px;
+}
+
+/* ===== Reusable ROG utilities ===== */
+
+/* Angular card: corner cut top-right + bottom-left (ROG look) */
+.clip-angular {
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+
+/* Frosted glass surface */
+.glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Red neon glow text */
+.neon-text {
+  text-shadow:
+    0 0 6px rgba(255, 0, 60, 0.55),
+    0 0 22px rgba(255, 45, 120, 0.35);
+}
+
+/* Carbon-fiber / hairline noise texture overlay */
+.carbon {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.25) 0 1px, transparent 1px 3px);
+}
+
+/* Moving scanline sweep */
+@keyframes scan {
+  0% {
+    transform: translateY(-120%);
+  }
+  100% {
+    transform: translateY(120%);
+  }
+}
+.scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 45, 120, 0.05) 48%,
+    rgba(255, 45, 120, 0.11) 50%,
+    rgba(255, 45, 120, 0.05) 52%,
+    transparent 100%
+  );
+  height: 55%;
+  animation: scan 6s linear infinite;
+  mix-blend-mode: screen;
+}
+
+/* Form input used in the add dialog */
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+.input:focus {
+  border-color: var(--color-rog-red);
+  box-shadow: 0 0 0 1px var(--color-rog-red), 0 0 16px rgba(255, 0, 60, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanline::after {
+    animation: none;
+  }
+}
