@@ -22,11 +22,16 @@ import ToolCard, { CardFace } from './ToolCard'
 
 interface Props {
   tools: Tool[]
+  /** true のときだけドラッグ並べ替え可（検索・絞り込み中は false）。 */
+  sortable: boolean
   onReorder: (next: Tool[]) => void
   onRemove: (id: string) => void
+  onToggleFav: (id: string) => void
 }
 
-export default function ToolGrid({ tools, onReorder, onRemove }: Props) {
+const GRID = 'mx-auto grid w-full max-w-6xl grid-cols-2 gap-4 px-5 pb-10 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4'
+
+export default function ToolGrid({ tools, sortable, onReorder, onRemove, onToggleFav }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const sensors = useSensors(
@@ -48,6 +53,23 @@ export default function ToolGrid({ tools, onReorder, onRemove }: Props) {
     onReorder(arrayMove(tools, from, to))
   }
 
+  // 検索・絞り込み中はドラッグ無効。普通のグリッドとして描画。
+  if (!sortable) {
+    return (
+      <div className={GRID}>
+        {tools.map((tool) => (
+          <CardFace
+            key={tool.id}
+            tool={tool}
+            onOpen={() => window.open(tool.url, '_blank', 'noopener,noreferrer')}
+            onRemove={onRemove}
+            onToggleFav={onToggleFav}
+          />
+        ))}
+      </div>
+    )
+  }
+
   const activeTool = tools.find((t) => t.id === activeId) ?? null
 
   return (
@@ -59,9 +81,9 @@ export default function ToolGrid({ tools, onReorder, onRemove }: Props) {
       onDragCancel={() => setActiveId(null)}
     >
       <SortableContext items={tools.map((t) => t.id)} strategy={rectSortingStrategy}>
-        <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-4 px-5 pb-10 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+        <div className={GRID}>
           {tools.map((tool) => (
-            <ToolCard key={tool.id} tool={tool} onRemove={onRemove} />
+            <ToolCard key={tool.id} tool={tool} onRemove={onRemove} onToggleFav={onToggleFav} />
           ))}
         </div>
       </SortableContext>
